@@ -24,7 +24,8 @@ function Stepper({
   circleTop, titleTop, completeOpacity, activeOpacity, defaultOpacity,
   completeTitleOpacity, activeTitleOpacity, defaultTitleOpacity, barStyle,
   defaultBorderColor, completeBorderColor, activeBorderColor, defaultBorderStyle,
-  completeBorderStyle, activeBorderStyle, defaultBarColor, completeBarColor, lineMarginOffset, defaultBorderWidth
+  completeBorderStyle, activeBorderStyle, defaultBarColor, completeBarColor, lineMarginOffset, defaultBorderWidth,
+  skipColor, skipTitleColor, skipOpacity, skipTitleOpacity, skipBarColor, skipBorderColor, skipBorderStyle,
 }) {
   return (
     <div style={ styles.root }>
@@ -38,7 +39,9 @@ function Stepper({
             href={step.href}
             onClick={step.onClick}
             active={!(disabledSteps || []).includes(index) && index === activeStep}
-            completed={!(disabledSteps || []).includes(index) && index < activeStep}
+            // completed={!(disabledSteps || []).includes(index) && index < activeStep} // default completed changed to passed flag
+            completed={step.completed}
+            skipped={step.skipped} // added this to allow skip for steps
             first={index === 0}
             isLast={index === steps.length - 1}
             index={index}
@@ -71,6 +74,13 @@ function Stepper({
             defaultBarColor={defaultBarColor}
             completeBarColor={completeBarColor}
             lineMarginOffset={lineMarginOffset}
+            skipColor={skipColor}
+            skipTitleColor={skipTitleColor}
+            skipOpacity={skipOpacity}
+            skipTitleOpacity={skipTitleOpacity}
+            skipBarColor={skipBarColor}
+            skipBorderColor={skipBorderColor}
+            skipBorderStyle={skipBorderStyle}
           />
         )) }
       </div>
@@ -113,7 +123,14 @@ Stepper.propTypes = {
   completeBorderStyle: PropTypes.string,
   activeBorderStyle: PropTypes.string,
   lineMarginOffset: PropTypes.number,
-  defaultBorderWidth: PropTypes.number
+  defaultBorderWidth: PropTypes.number,
+  skipColor: PropTypes.string,
+  skipTitleColor: PropTypes.string,
+  skipOpacity: PropTypes.string,
+  skipTitleOpacity: PropTypes.string,
+  skipBarColor: PropTypes.string,
+  skipBorderColor: PropTypes.string,
+  skipBorderStyle: PropTypes.string,
 };
 
 export default Stepper;

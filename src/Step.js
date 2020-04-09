@@ -15,7 +15,8 @@ export default class Step extends Component {
       circleTop, titleTop, width, completeOpacity, activeOpacity, defaultOpacity,
       completeTitleOpacity, activeTitleOpacity, defaultTitleOpacity, barStyle, defaultBarColor,
       completeBarColor, defaultBorderColor, completeBorderColor, activeBorderColor,
-      defaultBorderStyle,completeBorderStyle, activeBorderStyle, lineMarginOffset, defaultBorderWidth
+      defaultBorderStyle,completeBorderStyle, activeBorderStyle, lineMarginOffset, defaultBorderWidth,
+      skipColor, skipTitleColor, skipOpacity, skipTitleOpacity, skipBarColor, skipBorderColor, skipBorderStyle,
     } = this.props;
 
     return {
@@ -55,6 +56,13 @@ export default class Step extends Component {
         borderColor: completeBorderColor,
         borderStyle: completeBorderStyle,
       },
+      skippedCircle: {
+        backgroundColor: skipColor,
+        opacity: skipOpacity,
+        borderWidth: (skipBorderColor ? defaultBorderWidth : 0),
+        borderColor: skipBorderColor,
+        borderStyle: skipBorderStyle,
+      },
       index: {
         lineHeight: `${size + circleFontSize / 4}px`,
         color: circleFontColor
@@ -75,6 +83,10 @@ export default class Step extends Component {
       completedTitle: {
         color: completeTitleColor,
         opacity: completeTitleOpacity,
+      },
+      skippedTitle: {
+        color: skipTitleColor,
+        opacity: skipTitleOpacity,
       },
       leftBar: {
         position: 'absolute',
@@ -106,21 +118,29 @@ export default class Step extends Component {
         borderTopColor: completeBarColor,
         opacity: completeOpacity,
       },
+      skippedBar: {
+        borderTopStyle: barStyle,
+        borderTopWidth: 1,
+        borderTopColor: skipBarColor,
+        opacity: skipOpacity,
+      },
     };
   }
 
   render() {
-    const { title, icon, index, active, completed, first, isLast, href, onClick } = this.props;
+    const { title, icon, index, active, completed, skipped, first, isLast, href, onClick } = this.props;
 
     const styles = this.getStyles();
     const circleStyle = Object.assign(
       styles.circle,
       completed ? styles.completedCircle : {},
+      skipped && !active ? styles.skippedCircle : {},
       active ? styles.activeCircle : {},
     );
     const titleStyle = Object.assign(
       styles.title,
       completed ? styles.completedTitle : {},
+      skipped && !active ? styles.skippedTitle : {},
       active ? styles.activeTitle : {},
     );
     const leftStyle = Object.assign(styles.leftBar, (active || completed) ? styles.completedBar : {});
@@ -134,13 +154,13 @@ export default class Step extends Component {
         {active || completed ? (
           <a href={href} onClick={onClick} style={ styles.index }>{ stepContent }</a>
         ) : (
-          <span style={ styles.index }>{ stepContent }</span>
+          <span onClick={onClick} style={ styles.index }>{ stepContent }</span>
         )}
         </div>
         {active || completed ? (
           <a href={href} onClick={onClick} style={ titleStyle }>{ title }</a>
         ) : (
-          <div style={ titleStyle }>{ title }</div>
+          <div onClick={onClick} style={ titleStyle }>{ title }</div>
         )}
         { !first && <div style={ leftStyle }></div> }
         { !isLast && <div style={ rightStyle }></div> }
@@ -152,9 +172,11 @@ export default class Step extends Component {
 Step.defaultProps = {
   activeColor: '#5096FF',
   completeColor: '#5096FF',
+  skipColor: '#ab0707',
   defaultColor: '#E0E0E0',
   activeTitleColor: '#000',
   completeTitleColor: '#000',
+  skipTitleColor: '#ab0707',
   defaultTitleColor: '#757575',
   circleFontColor: '#FFF',
   size: 32,
@@ -187,6 +209,7 @@ Step.propTypes = {
   index: PropTypes.number,
   active: PropTypes.bool,
   completed: PropTypes.bool,
+  skipped: PropTypes.bool,
   first: PropTypes.bool,
   isLast: PropTypes.bool,
   completeOpacity: PropTypes.string,
@@ -205,5 +228,12 @@ Step.propTypes = {
   completeBorderStyle: PropTypes.string,
   activeBorderStyle: PropTypes.string,
   lineMarginOffset: PropTypes.number,
-  defaultBorderWidth: PropTypes.number
+  defaultBorderWidth: PropTypes.number,
+  skipColor: PropTypes.string,
+  skipTitleColor: PropTypes.string,
+  skipOpacity: PropTypes.string,
+  skipTitleOpacity: PropTypes.string,
+  skipBarColor: PropTypes.string,
+  skipBorderColor: PropTypes.string,
+  skipBorderStyle: PropTypes.string,
 };
